@@ -102,7 +102,6 @@ class MainFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         viewModel.onChangeFilter(
             when (item.itemId) {
-                R.id.show_rent_menu -> MainViewModel.AsteroidTime.TODAY
                 R.id.show_all_menu -> MainViewModel.AsteroidTime.WEEK
                 else -> MainViewModel.AsteroidTime.ALL
             }
