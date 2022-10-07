@@ -44,25 +44,6 @@ class Adapter (private var arrayList: List<Asteroid>) :
         }
     }
 
-    class AsteroidViewHolder private constructor(private val binding: CardViewBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-
-        fun bind(item: Asteroid, clickedItem: MainViewModel.AsteroidClickListener) {
-            binding.asteroid = item
-            binding.clickListener = clickedItem as MainViewModel
-            binding.executePendingBindings()
-        }
-
-        companion object {
-            fun createViewHolder(parent: ViewGroup): AsteroidViewHolder {
-                val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = CardViewBinding.inflate(layoutInflater, parent, false)
-                return AsteroidViewHolder(binding)
-            }
-        }
-
-    }
 
     override fun getItemCount(): Int {
         return arrayList.size
