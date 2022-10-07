@@ -11,6 +11,8 @@ import com.udacity.asteroidradar.constant.Constants
 import com.udacity.asteroidradar.database.DatabaseBuilder
 import com.udacity.asteroidradar.model.Asteroid
 import com.udacity.asteroidradar.model.PictureOfDay
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -31,6 +33,14 @@ class Repository (private val dataBase: DatabaseBuilder){
             JSONObject(ApiRetrofitBuilder.retrofitService.getAsteroids("", "", Constants.API_KEY))
         astroList= parseAsteroidsJsonResult(jsonObject)
         return astroList
+    }
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    suspend fun getAsteroidsFromAPI() {
+        withContext(Dispatchers.IO) {
+            val asteroids = ApiRetrofitBuilder.ApiService.getAsteroids()
+            dataBase.databaseDAO_object.insertAll(asteroids)
+        }
     }
 
     suspend fun getAsteroidPicture(): PictureOfDay {

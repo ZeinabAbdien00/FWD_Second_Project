@@ -14,6 +14,7 @@ import com.udacity.asteroidradar.recycler_view.Adapter
 import com.udacity.asteroidradar.repository.Repository
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.N)
 class MainViewModel(private val repository: Repository) : ViewModel() {
 
     private val timeFilter = MutableLiveData(AsteroidTime.ALL)
@@ -24,6 +25,29 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
     private val _picture = MutableLiveData<PictureOfDay>()
     val picture: LiveData<PictureOfDay>
         get() = _picture
+
+    private val _navigateToDetailFragment = MutableLiveData<Asteroid?>()
+    val navigateToDetailFragment
+        get() = _navigateToDetailFragment
+
+    @RequiresApi(Build.VERSION_CODES.N)
+    fun refresh() {
+        viewModelScope.launch {
+            try {
+                repository.getAsteroidsFromAPI()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    init {
+        refresh()
+        getAsteroidPicture()
+        getAsteroids()
+        _navigateToDetailFragment.value=null
+    }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     val asteroids =
@@ -61,10 +85,6 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
 
     enum class AsteroidTime {
         TODAY,WEEK,ALL
-    }
-
-    class AsteroidClickListener(val clickListener: (Asteroid) -> Unit) {
-        fun onClickAsteroid(data: Asteroid) = clickListener(data)
     }
 
 }

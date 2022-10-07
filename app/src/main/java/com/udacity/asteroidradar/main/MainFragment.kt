@@ -42,6 +42,11 @@ class MainFragment : Fragment() {
 
         binding.viewModel = viewModel
 
+        val adapter = AstAdapter(AstAdapter.AsteroidClickListener { asteroid ->
+            viewModel.navigateToDetailFragment.value = asteroid
+        })
+        binding.asteroidRecycler.adapter = adapter
+
         if (checkForInternetConnection(requireContext())) {
 
             viewModel.getAsteroids()
@@ -50,6 +55,11 @@ class MainFragment : Fragment() {
 
                 recyclerAdapter = Adapter(viewModel.responseIncomeData.value!!)
                 binding.asteroidRecycler.adapter = recyclerAdapter
+
+                viewModel.asteroids.observe(viewLifecycleOwner, Observer {
+                    adapter.submitList(it)
+                })
+
                 asteroid_recycler.adapter = recyclerAdapter
                 asteroid_recycler.layoutManager = LinearLayoutManager(activity)
                 recyclerAdapter.setOnItemClick(object : Adapter.OnItemClick {
@@ -72,6 +82,11 @@ class MainFragment : Fragment() {
                     viewModel.arraylist = databaseDAO.getAll() as ArrayList<Asteroid>
                     recyclerAdapter = Adapter(viewModel.arraylist)
                     binding.asteroidRecycler.adapter = recyclerAdapter
+
+                    viewModel.asteroids.observe(viewLifecycleOwner, Observer {
+                        adapter.submitList(it)
+                    })
+
                     asteroid_recycler.adapter = recyclerAdapter
                     asteroid_recycler.layoutManager = LinearLayoutManager(activity)
 
@@ -99,10 +114,12 @@ class MainFragment : Fragment() {
         inflater.inflate(R.menu.main_overflow_menu, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         viewModel.onChangeFilter(
             when (item.itemId) {
                 R.id.show_all_menu -> MainViewModel.AsteroidTime.WEEK
+                R.id.show_rent_menu -> MainViewModel.AsteroidTime.TODAY
                 else -> MainViewModel.AsteroidTime.ALL
             }
         )
