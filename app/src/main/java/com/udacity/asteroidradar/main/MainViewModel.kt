@@ -53,7 +53,6 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
     val asteroids =
         Transformations.switchMap(timeFilter) {
             when (it) {
-                AsteroidTime.WEEK -> repository.asteroidWeekList
                 AsteroidTime.TODAY -> repository.asteroidDayList
                 else -> repository.asteroidSavedList
             }
@@ -84,7 +83,7 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
     }
 
     enum class AsteroidTime {
-        TODAY,WEEK,ALL
+        TODAY,ALL
     }
 
 }

@@ -47,6 +47,10 @@ class MainFragment : Fragment() {
         })
         binding.asteroidRecycler.adapter = adapter
 
+        viewModel.asteroids.observe(viewLifecycleOwner, Observer {
+            adapter.submitList(it)
+        })
+
         if (checkForInternetConnection(requireContext())) {
 
             viewModel.getAsteroids()
@@ -54,13 +58,8 @@ class MainFragment : Fragment() {
             viewModel.responseIncomeData.observe(viewLifecycleOwner, Observer { incomeData ->
 
                 recyclerAdapter = Adapter(viewModel.responseIncomeData.value!!)
-                binding.asteroidRecycler.adapter = recyclerAdapter
-
-                viewModel.asteroids.observe(viewLifecycleOwner, Observer {
-                    adapter.submitList(it)
-                })
-
-                asteroid_recycler.adapter = recyclerAdapter
+                //binding.asteroidRecycler.adapter = recyclerAdapter
+                //asteroid_recycler.adapter = recyclerAdapter
                 asteroid_recycler.layoutManager = LinearLayoutManager(activity)
                 recyclerAdapter.setOnItemClick(object : Adapter.OnItemClick {
                     override fun OnItemClick(position: Int) {
@@ -71,6 +70,15 @@ class MainFragment : Fragment() {
                         )
                     }
                 })
+
+
+                  viewModel.navigateToDetailFragment.observe(viewLifecycleOwner , Observer{
+                  asteroid ->
+                  if(asteroid!=null){
+                  findNavController().navigate(MainFragmentDirections.actionShowDetail(asteroid))
+                  viewModel.navigateToDetailFragment.value=null
+                  }})
+
                 GlobalScope.launch {
                     databaseDAO.insertAll(viewModel.responseIncomeData.value!!)
                 }
@@ -81,13 +89,9 @@ class MainFragment : Fragment() {
                 GlobalScope.launch {
                     viewModel.arraylist = databaseDAO.getAll() as ArrayList<Asteroid>
                     recyclerAdapter = Adapter(viewModel.arraylist)
-                    binding.asteroidRecycler.adapter = recyclerAdapter
+                    //binding.asteroidRecycler.adapter = recyclerAdapter
 
-                    viewModel.asteroids.observe(viewLifecycleOwner, Observer {
-                        adapter.submitList(it)
-                    })
-
-                    asteroid_recycler.adapter = recyclerAdapter
+                    //asteroid_recycler.adapter = recyclerAdapter
                     asteroid_recycler.layoutManager = LinearLayoutManager(activity)
 
                     recyclerAdapter.setOnItemClick(object : Adapter.OnItemClick {
@@ -118,7 +122,6 @@ class MainFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         viewModel.onChangeFilter(
             when (item.itemId) {
-                R.id.show_all_menu -> MainViewModel.AsteroidTime.WEEK
                 R.id.show_rent_menu -> MainViewModel.AsteroidTime.TODAY
                 else -> MainViewModel.AsteroidTime.ALL
             }

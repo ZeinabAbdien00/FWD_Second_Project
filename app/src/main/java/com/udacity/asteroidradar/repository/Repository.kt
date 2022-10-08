@@ -51,15 +51,15 @@ class Repository (private val dataBase: DatabaseBuilder){
         Transformations.map(dataBase.databaseDAO_object.getAllAsteroids()) {
             it.asteroidList()
         }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    val asteroidWeekList: LiveData<List<Asteroid>> = Transformations.map(
-        dataBase.databaseDAO_object.getAsteroidsForWeek(
-            startDate.toString(), endDate
-        )
-    ) {
-        it.asteroidList()
-    }
+//
+//    @RequiresApi(Build.VERSION_CODES.O)
+//    val asteroidWeekList: LiveData<List<Asteroid>> = Transformations.map(
+//        dataBase.databaseDAO_object.getAsteroidsForWeek(
+//            startDate.toString(), endDate
+//        )
+//    ) {
+//        it.asteroidList()
+//    }
 
     val asteroidDayList: LiveData<List<Asteroid>> = Transformations.map(
         dataBase.databaseDAO_object.getAsteroidsForDay(
