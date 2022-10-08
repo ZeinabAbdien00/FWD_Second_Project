@@ -47,8 +47,6 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
         getAsteroids()
         _navigateToDetailFragment.value=null
     }
-
-
     @RequiresApi(Build.VERSION_CODES.O)
     val asteroids =
         Transformations.switchMap(timeFilter) {
