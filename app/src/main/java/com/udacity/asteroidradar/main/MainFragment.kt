@@ -58,8 +58,6 @@ class MainFragment : Fragment() {
             viewModel.responseIncomeData.observe(viewLifecycleOwner, Observer { incomeData ->
 
                 recyclerAdapter = Adapter(viewModel.responseIncomeData.value!!)
-                //binding.asteroidRecycler.adapter = recyclerAdapter
-                //asteroid_recycler.adapter = recyclerAdapter
                 asteroid_recycler.layoutManager = LinearLayoutManager(activity)
                 recyclerAdapter.setOnItemClick(object : Adapter.OnItemClick {
                     override fun OnItemClick(position: Int) {
@@ -89,9 +87,6 @@ class MainFragment : Fragment() {
                 GlobalScope.launch {
                     viewModel.arraylist = databaseDAO.getAll() as ArrayList<Asteroid>
                     recyclerAdapter = Adapter(viewModel.arraylist)
-                    //binding.asteroidRecycler.adapter = recyclerAdapter
-
-                    //asteroid_recycler.adapter = recyclerAdapter
                     asteroid_recycler.layoutManager = LinearLayoutManager(activity)
 
                     recyclerAdapter.setOnItemClick(object : Adapter.OnItemClick {
